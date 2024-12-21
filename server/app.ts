@@ -6,6 +6,8 @@ import { ErrorMiddleware } from "./middleware/error";
 import userRouter from "./routes/user.routes";
 import courseRouter from "./routes/course.routes";
 import notificationRoute from "./routes/notification.routes";
+import analyticsRouter from "./routes/analytics.routes";
+import layoutRouter from "./routes/layout.routes";
 
 export const app = express();
 
@@ -26,8 +28,14 @@ app.use(
 );
 
 //routes
-app.use("/api/v1", userRouter,courseRouter,notificationRoute);
-
+app.use(
+  "/api/v1",
+  userRouter,
+  courseRouter,
+  notificationRoute,
+  analyticsRouter,
+  layoutRouter
+);
 
 //testinf API
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
