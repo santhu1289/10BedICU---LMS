@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question and Replies</title>
+  <style>
+    /* Embedded CSS Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .question-box, .replies-box, .reply-form {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+
+    .question-box h3, .replies-box h3, .reply-form h3 {
+      margin-top: 0;
+      color: #555;
+    }
+
+    .question-box p, .replies-box p {
+      margin: 5px 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Question and Replies</h1>
+
+    <!-- Display Question -->
+    <div class="question-box">
+      <h3>Question</h3>
+      <p><strong>User:</strong> <%= question.user.name || "Anonymous" %></p>
+      <p><strong>Content:</strong> <%= question.question %></p>
+    </div>
+
+    <!-- Display Replies -->
+    <div class="replies-box">
+      <h3>Replies</h3>
+      <% if (question.questionReplies && question.questionReplies.length > 0) { %>
+        <ul>
+          <% question.questionReplies.forEach(reply => { %>
+            <li>
+              <p><strong>User:</strong> <%= reply.user.name || "Anonymous" %></p>
+              <p><strong>Reply:</strong> <%= reply.question %></p>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No replies yet. Be the first to reply!</p>
+      <% } %>
+    </div>
+
+    <!-- Add a Reply -->
+    <div class="reply-form">
+      <h3>Add a Reply</h3>
+      <form action="/add-reply" method="POST">
+        <input type="hidden" name="questionId" value="<%= question._id %>">
+        <textarea name="reply" rows="4" placeholder="Write your reply here..." required></textarea>
+        <button type="submit">Submit Reply</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,7 +1,10 @@
 import express from "express";
 import {
+  addAnswer,
+  addQuestion,
   editCourse,
   getallCourse,
+  getCourseByUser,
   getSingleCourse,
   uploadCourse,
 } from "../controllers/course.controller";
@@ -25,4 +28,11 @@ courseRouter.put(
 courseRouter.get("/get-course/:id", getSingleCourse);
 
 courseRouter.get("/get-courses", getallCourse);
+
+courseRouter.get("/get-course-content/:id", isAuthenticated, getCourseByUser);
+
+courseRouter.put("/add-question", isAuthenticated, addQuestion);
+
+courseRouter.put("/add-answer", isAuthenticated, addAnswer);
+
 export default courseRouter;
