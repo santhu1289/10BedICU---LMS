@@ -92,7 +92,7 @@ export const getSingleCourse = catchAsyncError(
           "-courseData.videoUrl -courseData.suggestion -courseData.question -courseData.links" //remove if you wANT ALL
         );
 
-        await redis.set(courseId, JSON.stringify(course));
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800); //7days
         res.status(201).json({
           success: true,
           course,
@@ -326,4 +326,3 @@ export const deleteCourse = catchAsyncError(
     }
   }
 );
-
