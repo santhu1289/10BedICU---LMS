@@ -6,7 +6,6 @@
 
 @layer base {
   :root {
-
     --background: 0 0% 100%;
 
     --foreground: 222.2 84% 4.9%;
@@ -57,12 +56,11 @@
 
     --radius: 0.5rem;
 
-    --button: #095f1e;
+    --button: #1d8838;
 
     --hoverButtonColor: #79e08f;
   }
   .dark {
-
     --background: 222.2 84% 4.9%;
 
     --foreground: 210 40% 98%;
@@ -109,7 +107,7 @@
 
     --chart-4: 280 65% 60%;
 
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
