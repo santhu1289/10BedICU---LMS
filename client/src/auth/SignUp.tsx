@@ -3,16 +3,10 @@ import { Input } from "@/components/ui/input";
 
 import { Separator } from "@/components/ui/separator";
 import { SignupProps, userSignupSchema } from "@/schema/userSchema";
+import { useUserStore } from "@/store/useUserStore";
 import { Loader2, LockKeyhole, Mail, User, UserCheck } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-
-// type SignupProps = {
-//   email: string;
-//   password: string;
-//   fullName: string;
-//   role: string;
-// };
 
 const SignUp = () => {
   const [input, setInput] = useState<SignupProps>({
@@ -27,8 +21,8 @@ const SignUp = () => {
     setInput({ ...input, [name]: value });
   };
   const [errors, setErrors] = useState<Partial<SignupProps>>({});
-
-  const SignupSubmitHandler = (e: FormEvent) => {
+  const { signup, loading } = useUserStore();
+  const SignupSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
     const result = userSignupSchema.safeParse(input);
     if (!result.success) {
@@ -38,10 +32,8 @@ const SignUp = () => {
     }
     setErrors({});
     //Login API Implementation start here
-    console.log(input);
+    await signup(input);
   };
-
-  const loading = false;
 
   return (
     <div className="flex items-center justify-center min-h-screen">
