@@ -9,6 +9,7 @@ import Profile from "./components/Profile";
 import Categories from "./components/Categories";
 import OnlineCategory from "./components/OnlineCategory";
 import HandsonCategory from "./components/HandsonCategory";
+import CourseDetails from "./components/CourseDetails";
 
 const appRouter = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/handsoncourses",
         element: <HandsonCategory />,
+      },
+      {
+        path: "/coursedetails/:id",
+        element: <CourseDetails />,
       },
     ],
   },

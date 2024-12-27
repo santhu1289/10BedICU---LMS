@@ -17,7 +17,7 @@ const OnlineCategory = () => {
       <div className="grid md:grid-cols-3 gap-6">
         {/* Online Class Card */}
         {[1, 2, 3].map((item: number, idx: number) => (
-          <Link to="/onlinecourse/{123}">
+          <Link to="/coursedetails/{123}">
             <Card className="bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
               <div className="relative">
                 <AspectRatio ratio={16 / 6}>
