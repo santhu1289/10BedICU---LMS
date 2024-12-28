@@ -12,7 +12,7 @@ const SignUp = () => {
   const [input, setInput] = useState<SignupProps>({
     email: "",
     password: "",
-    fullname: "",
+    name: "",
     role: "",
   });
 
@@ -49,15 +49,15 @@ const SignUp = () => {
           <div className="relative">
             <Input
               type="text"
-              name="fullname"
-              value={input.fullname}
+              name="name"
+              value={input.name}
               onChange={changeEventHandler}
               placeholder="Enter your Full Name"
               className="pl-10 focus-visible:ring-1"
             />
             <User className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
             {errors && (
-              <span className="text-sm text-red-950">{errors.fullname}</span>
+              <span className="text-sm text-red-950">{errors.name}</span>
             )}
           </div>
 

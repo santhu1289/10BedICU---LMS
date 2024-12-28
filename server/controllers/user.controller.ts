@@ -28,50 +28,65 @@ interface IRegistrationBody {
   name: string;
   email: string;
   password: string;
+  role: string; // Added role property
   avatar?: string;
 }
 
 export const registrationUser = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, role } = req.body;
 
-      const isEmailExit = await userModel.findOne({ email });
-      if (isEmailExit) {
-        return next(new ErrorHandler("Email Already Exist", 400));
+      // Validate role
+      if (!["admin", "user"].includes(role)) {
+        return next(new ErrorHandler("Invalid role assigned", 400));
       }
 
+      // Check if email already exists
+      const isEmailExist = await userModel.findOne({ email });
+      if (isEmailExist) {
+        return next(new ErrorHandler("Email Already Exists", 400));
+      }
+
+      // Create user
       const user: IRegistrationBody = {
         name,
         email,
         password,
+        role,
       };
 
-      const activationToken = createActivationToken(user);
-      const activationCode = activationToken.activationCode;
+      // Save user to the database
+      const userDetails = await userModel.create(user);
 
-      const data = { user: { name: user.name }, activationCode };
+      // Send a welcome email
+      const data = { user: { name: user.name, role: user.role } };
       const html = await ejs.renderFile(
-        path.join(__dirname, "../mails/activation-mail.ejs"),
+        path.join(__dirname, "../mails/welcome-mail.ejs"),
         data
       );
 
       try {
         await sendMail({
           email: user.email,
-          subject: "Activate Yout Account",
-          template: "activation-mail.ejs",
+          subject: "Welcome to Our Platform!",
+          template: "welcome-mail.ejs",
           data,
         });
+
+        // Respond with success message
         res.status(201).json({
           success: true,
-          message: `Please check your email: ${user.email} to activate your account`,
-          activationToken: activationToken.token,
+          message: `Welcome ${user.name}! Your account has been successfully created.`,
         });
       } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400));
+        // Handle email sending failure
+        return next(
+          new ErrorHandler("User created but email sending failed", 400)
+        );
       }
     } catch (error: any) {
+      // Handle any other errors
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -110,7 +125,8 @@ export const activateUser = catchAsyncError(
     try {
       const { activation_token, activation_code } =
         req.body as IActivationRequest;
-
+      console.log("____________________________________________");
+      console.log("req=", req, "res=", res);
       const newUser: { user: IUser; activationCode: string } = jwt.verify(
         activation_token,
         process.env.ACTIVATION_SECRET as string
@@ -121,7 +137,8 @@ export const activateUser = catchAsyncError(
       }
 
       const { name, email, password } = newUser.user;
-
+      console.log("____________________________________________");
+      console.log(newUser);
       const existUser = await userModel.findOne({ email });
       if (existUser) {
         return next(new ErrorHandler("Email Already Exist", 400));

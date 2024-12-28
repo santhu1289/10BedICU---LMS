@@ -7,7 +7,7 @@ import { toast } from "sonner";
 const API_END_POINT = "http://localhost:8000/api/v1/";
 axios.defaults.withCredentials = true;
 
-export const useUserStore = create<unknown>()(
+export const useUserStore = create<any>()(
   persist(
     (set) => ({
       user: null,
@@ -18,11 +18,15 @@ export const useUserStore = create<unknown>()(
       signup: async (input: SignupProps) => {
         try {
           set({ loading: true });
-          const response = await axios.post(`${API_END_POINT}/registration`, input, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await axios.post(
+            `${API_END_POINT}/registration`,
+            input,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
           if (response.data.success) {
             toast.success(response.data.message);
             set({
