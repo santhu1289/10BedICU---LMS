@@ -4,10 +4,10 @@ import axios from "axios";
 import { SignupProps } from "@/schema/userSchema";
 import { toast } from "sonner";
 
-const API_END_POINT = "http://localhost:8000/api/v1";
+const API_END_POINT = "http://localhost:8000/api/v1/";
 axios.defaults.withCredentials = true;
 
-export const useUserStore = create<any>()(
+export const useUserStore = create<unknown>()(
   persist(
     (set) => ({
       user: null,
@@ -18,7 +18,7 @@ export const useUserStore = create<any>()(
       signup: async (input: SignupProps) => {
         try {
           set({ loading: true });
-          const response = await axios.post(`${API_END_POINT}/signup`, input, {
+          const response = await axios.post(`${API_END_POINT}/registration`, input, {
             headers: {
               "Content-Type": "application/json",
             },
