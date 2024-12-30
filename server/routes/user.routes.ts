@@ -11,6 +11,7 @@ import {
   updateAccessToken,
   updatePassword,
   updateProfilePicture,
+  updateUser,
   updateUserInfo,
   updateUserRole,
 } from "../controllers/user.controller";
@@ -24,7 +25,7 @@ userRouter.post("/activate-user", activateUser);
 
 userRouter.post("/login", loginUser);
 
-userRouter.get("/logout", isAuthenticated, logoutUser);
+userRouter.get("/logout1", isAuthenticated, logoutUser);
 
 userRouter.get("/refresh", updateAccessToken);
 
@@ -36,7 +37,7 @@ userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);
 
 userRouter.put("/update-user-password", isAuthenticated, updatePassword);
 
-userRouter.put("/update-user-avatar", isAuthenticated, updateProfilePicture);
+userRouter.put("/update-user-avatar", isAuthenticated, updateUser);
 
 userRouter.get(
   "/get-all-users",

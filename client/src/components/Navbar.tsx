@@ -38,11 +38,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { useUserStore } from "@/store/useUserStore";
 
 const Navbar = () => {
-  const admin = false;
-  const user = false;
-  const loading = false;
+  const { user, loading, logout } = useUserStore();
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between h-20">
@@ -65,13 +64,13 @@ const Navbar = () => {
             <Link to="/courses">Courses</Link>
             {user ? <Link to="/profile">Profile</Link> : " "}
           </div>
-          {admin && (
+          {user?.admin && (
             <Menubar>
               <MenubarMenu>
                 <MenubarTrigger>DashBoard</MenubarTrigger>
                 <MenubarContent>
                   <MenubarItem>
-                    <Link to=""> Admin Dashboard </Link>
+                    <Link to="/adminpanel"> Admin Dashboard </Link>
                     <MenubarShortcut>⌘T</MenubarShortcut>
                   </MenubarItem>
 
@@ -119,8 +118,11 @@ const Navbar = () => {
                 Please Wait ...
               </Button>
             ) : (
-              <Button className="hover:bg-hovergreen w-auto bg-green1 hover:border hover:border-black hover:text-black hover:border-b shadow-lg">
-                Login
+              <Button
+                onClick={logout}
+                className="hover:bg-hovergreen w-auto bg-green1 hover:border hover:border-black hover:text-black hover:border-b shadow-lg"
+              >
+                LogOut
               </Button>
             )}
           </div>

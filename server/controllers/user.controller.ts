@@ -286,8 +286,11 @@ export const updateAccessToken = catchAsyncError(
 export const getUserInfo = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.user?._id as string;
-      getUserById(userId, res);
+      const userId = req.user?._id;
+      if (!userId) {
+        return next(new ErrorHandler("User ID is not provided", 400));
+      }
+      await getUserById(userId as string, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -311,6 +314,78 @@ export const socialAuth = catchAsyncError(
       } else {
         sendToken(user, 200, res);
       }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+//both updates in one funtion
+interface IUpdateUserRequest {
+  name?: string;
+  email?: string;
+  avatar?: string;
+}
+
+export const updateUser = catchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { name, email, avatar } = req.body as IUpdateUserRequest;
+      const userId = req.user?._id;
+
+      if (!userId) {
+        throw new Error("User ID is undefined");
+      }
+
+      const user = await userModel.findById(userId);
+
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
+      // Update email
+      if (email) {
+        const isEmailExist = await userModel.findOne({ email });
+        if (isEmailExist && isEmailExist._id.toString() !== userId.toString()) {
+          return next(new ErrorHandler("Email already exists", 400));
+        }
+        user.email = email;
+      }
+
+      // Update name
+      if (name) {
+        user.name = name;
+      }
+
+      // Update profile picture
+      if (avatar) {
+        if (user.avatar?.public_id) {
+          // Delete the old avatar from Cloudinary
+          await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+        }
+
+        // Upload the new avatar to Cloudinary
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+          folder: "avatars",
+          width: 150,
+        });
+
+        user.avatar = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+      }
+
+      // Save the updated user details to the database
+      await user.save();
+
+      // Update the user cache in Redis
+      await redis.set(userId, JSON.stringify(user));
+
+      res.status(200).json({
+        success: true,
+        user,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
